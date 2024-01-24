@@ -32,8 +32,8 @@ dependencies {
 
 	// BANCO DE DADOS
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	runtimeOnly("com.h2database:h2") // In-memory
-//	runtimeOnly("org.postgresql:postgresql")
+//	runtimeOnly("com.h2database:h2") // In-memory
+	runtimeOnly("org.postgresql:postgresql")
 
 	// TESTE
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
