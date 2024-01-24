@@ -2,7 +2,6 @@ package com.kotlinspring.controller
 
 import com.kotlinspring.dto.CourseDTO
 import com.kotlinspring.entity.Course
-import com.kotlinspring.entity.Instructor
 import com.kotlinspring.repository.CourseRepository
 import com.kotlinspring.repository.InstructorRepository
 import org.junit.jupiter.api.Assertions
@@ -14,13 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriComponentsBuilder
+import util.PostgresSQLContainerInitializer
 import util.courseEntityList
 import util.instructorEntity
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // Roda o servidor de test em uma porta aleatoria
-@ActiveProfiles("test") // usa o profiler de test (application-test.yml)
+@ActiveProfiles("postgres") // usa o profiler de test (application-test.yml)
 @AutoConfigureWebTestClient // Ao inves de utilizar um server HTTP, as req batem diretamente na app
-class CourseControllerIntgTest {
+class CourseControllerIntgTest : PostgresSQLContainerInitializer() {
 
     @Autowired
     lateinit var webTestClient: WebTestClient

@@ -20,6 +20,14 @@ repositories {
 	mavenCentral()
 }
 
+extra["testcontainersVersion"] = "1.16.2"
+
+dependencyManagement {
+	imports {
+		mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
+	}
+}
+
 dependencies {
 	// WEB
 	implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -43,6 +51,9 @@ dependencies {
 	testImplementation("io.mockk:mockk:1.10.4")
 	testImplementation("com.ninja-squad:springmockk:3.0.1")
 
+	//test-containers
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:postgresql")
 }
 
 tasks.withType<KotlinCompile> {

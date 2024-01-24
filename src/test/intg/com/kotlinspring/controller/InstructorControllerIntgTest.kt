@@ -8,11 +8,12 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import util.PostgresSQLContainerInitializer
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // Roda o servidor de test em uma porta aleatoria
-@ActiveProfiles("test") // usa o profiler de test (application-test.yml)
+@ActiveProfiles("postgres") // usa o profiler de test (application-test.yml)
 @AutoConfigureWebTestClient // Ao inves de utilizar um server HTTP, as req batem diretamente na app
-class InstructorControllerIntgTest {
+class InstructorControllerIntgTest : PostgresSQLContainerInitializer() {
 
     @Autowired
     lateinit var webTestClient: WebTestClient

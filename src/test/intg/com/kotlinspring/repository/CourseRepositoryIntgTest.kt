@@ -7,15 +7,18 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
+import util.PostgresSQLContainerInitializer
 import util.courseEntityList
 import util.instructorEntity
 import java.util.stream.Stream
 
 @DataJpaTest
-@ActiveProfiles("test")
-class CourseRepositoryIntgTest {
+@ActiveProfiles("postgres")
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+class CourseRepositoryIntgTest : PostgresSQLContainerInitializer() {
 
     @Autowired
     lateinit var courseRepository: CourseRepository
