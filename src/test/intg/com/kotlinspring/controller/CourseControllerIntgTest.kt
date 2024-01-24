@@ -2,7 +2,9 @@ package com.kotlinspring.controller
 
 import com.kotlinspring.dto.CourseDTO
 import com.kotlinspring.entity.Course
+import com.kotlinspring.entity.Instructor
 import com.kotlinspring.repository.CourseRepository
+import com.kotlinspring.repository.InstructorRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -13,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.util.UriComponentsBuilder
 import util.courseEntityList
+import util.instructorEntity
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) // Roda o servidor de test em uma porta aleatoria
 @ActiveProfiles("test") // usa o profiler de test (application-test.yml)
@@ -25,16 +28,27 @@ class CourseControllerIntgTest {
     @Autowired
     lateinit var courseRepository: CourseRepository
 
+    @Autowired
+    lateinit var instructorRepository: InstructorRepository
+
     @BeforeEach
     fun setUp() {
         courseRepository.deleteAll()
-        val courses = courseEntityList()
+        instructorRepository.deleteAll()
+
+        val instructor = instructorEntity()
+        instructorRepository.save(instructor)
+
+        val courses = courseEntityList(instructor)
         courseRepository.saveAll(courses)
     }
 
     @Test
     fun addCourse() {
-        val courseDTO = CourseDTO(null, "Spring Legal", "Felipe")
+        val instructor = instructorRepository.findAll().first()
+        Assertions.assertNotNull(instructor.id)
+
+        val courseDTO = CourseDTO(null, "Spring Legal", "Felipe", instructor.id!!)
 
         val savedCourseDTO = webTestClient
             .post()
@@ -85,10 +99,13 @@ class CourseControllerIntgTest {
 
     @Test
     fun updateCourses() {
-        val course = Course(null,"Build RestFul APis using SpringBoot and Kotlin", "Development")
+        val instructor = instructorRepository.findAll().first()
+        Assertions.assertNotNull(instructor.id)
+
+        val course = Course(null,"Build RestFul APis using SpringBoot and Kotlin", "Development", instructor)
         courseRepository.save(course)
 
-        val courseDTO = CourseDTO(null,"Build RestFul APis using SpringBoot and Kotlin1", "Development")
+        val courseDTO = CourseDTO(null,"Build RestFul APis using SpringBoot and Kotlin1", "Development", instructor.id!!)
 
         val updatedCourseDTO = webTestClient
             .put()
@@ -105,7 +122,10 @@ class CourseControllerIntgTest {
 
     @Test
     fun deleteCourses() {
-        val course = Course(null,"Build RestFul APis using SpringBoot and Kotlin", "Development")
+        val instructor = instructorRepository.findAll().first()
+        Assertions.assertNotNull(instructor.id)
+
+        val course = Course(null,"Build RestFul APis using SpringBoot and Kotlin", "Development", instructor)
         courseRepository.save(course)
 
         webTestClient

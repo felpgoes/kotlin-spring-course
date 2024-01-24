@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
 import util.courseEntityList
+import util.instructorEntity
 import java.util.stream.Stream
 
 @DataJpaTest
@@ -19,10 +20,15 @@ class CourseRepositoryIntgTest {
     @Autowired
     lateinit var courseRepository: CourseRepository
 
+    @Autowired
+    lateinit var instructorRepository: InstructorRepository
+
     @BeforeEach
     fun setUp() {
         courseRepository.deleteAll()
-        val courses = courseEntityList()
+        val instructor = instructorEntity()
+        instructorRepository.save(instructor)
+        val courses = courseEntityList(instructor)
         courseRepository.saveAll(courses)
     }
 

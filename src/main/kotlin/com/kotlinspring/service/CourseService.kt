@@ -3,18 +3,29 @@ package com.kotlinspring.service
 import com.kotlinspring.dto.CourseDTO
 import com.kotlinspring.entity.Course
 import com.kotlinspring.exception.CourseNotFoundException
+import com.kotlinspring.exception.InstructorNotValidException
 import com.kotlinspring.repository.CourseRepository
 import mu.KLogging
 import org.springframework.stereotype.Service
 
 @Service
-class CourseService (val courseRepository: CourseRepository) {
+class CourseService (
+    val courseRepository: CourseRepository,
+    val instructorService: InstructorService
+    ) {
 
     companion object : KLogging()
 
     fun add(courseDTO: CourseDTO): CourseDTO {
+
+        val instructor = instructorService.findByInstructorId(courseDTO.instructorId!!)
+
+        if(!instructor.isPresent) {
+            throw InstructorNotValidException("Instructor not valid for the Id: ${courseDTO.instructorId}")
+        }
+
         val course = courseDTO.let {
-            Course(null, it.name, it.category)
+            Course(null, it.name, it.category, instructor.get())
         }
 
         courseRepository.save(course)
@@ -22,7 +33,7 @@ class CourseService (val courseRepository: CourseRepository) {
         logger.info("Saved course is: $course")
 
         return course.let {
-            CourseDTO(it.id, it.name, it.category)
+            CourseDTO(it.id, it.name, it.category, it.instructor!!.id!!)
         }
     }
 
@@ -31,7 +42,7 @@ class CourseService (val courseRepository: CourseRepository) {
             courseRepository.findCoursesByName(courseName)
         } ?: courseRepository.findAll()
 
-        return courses.map { CourseDTO(it.id, it.name, it.category)}
+        return courses.map { CourseDTO(it.id, it.name, it.category, it.instructor!!.id!!)}
     }
 
     fun update(courseId: Int, body: CourseDTO): CourseDTO {
@@ -43,7 +54,7 @@ class CourseService (val courseRepository: CourseRepository) {
                 it.name = body.name
                 it.category = body.category
                 courseRepository.save(it)
-                CourseDTO(it.id, it.name, it.category)
+                CourseDTO(it.id, it.name, it.category, it.instructor!!.id!!)
             }
 
 //        Código do curso

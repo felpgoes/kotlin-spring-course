@@ -25,7 +25,7 @@ class CourseControllerUnitTest {
 
     @Test
     fun addCourse() {
-        val courseDTO = CourseDTO(null, "Build RestFul APis using Spring Boot and Kotlin", "Felipe Goes")
+        val courseDTO = CourseDTO(null, "Build RestFul APis using Spring Boot and Kotlin", "Felipe Goes", 1)
 
         every { courseServiceMock.add(any()) } returns courseDTO(1)
 
@@ -44,7 +44,7 @@ class CourseControllerUnitTest {
 
     @Test
     fun addCourseValidation() {
-        val courseDTO = CourseDTO(null, "", "")
+        val courseDTO = CourseDTO(null, "", "", 1)
 
         every { courseServiceMock.add(any()) } returns courseDTO(1)
 
@@ -63,7 +63,7 @@ class CourseControllerUnitTest {
 
     @Test
     fun addCourseRuntimeException() {
-        val courseDTO = CourseDTO(null, "Build RestFul APis using Spring Boot and Kotlin", "Felipe Goes")
+        val courseDTO = CourseDTO(null, "Build RestFul APis using Spring Boot and Kotlin", "Felipe Goes",1)
 
         val errorMessage = "Unexpected Error occurred"
         every { courseServiceMock.add(any()) } throws RuntimeException(errorMessage)
@@ -109,7 +109,7 @@ class CourseControllerUnitTest {
     fun updateCourses() {
         every { courseServiceMock.update(any(), any()) } returns courseDTO(100, "Build RestFul APis using SpringBoot and Kotlin1")
 
-        val courseDTO = CourseDTO(null,"Build RestFul APis using SpringBoot and Kotlin1", "Development")
+        val courseDTO = CourseDTO(null,"Build RestFul APis using SpringBoot and Kotlin1", "Development", 1)
 
         val updatedCourseDTO = webTestClient
             .put()
